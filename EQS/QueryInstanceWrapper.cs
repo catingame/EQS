@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 namespace EQS
 {
-    internal class QueryInstanceWrapper
+    public class QueryInstanceWrapper
     {
-        readonly private QueryTemplate queryTemplate;
-        readonly private IQuerier querier;
+        private readonly QueryTemplate queryTemplate;
+        private readonly IQuerier querier;
         private QueryResult queryResult;
 
         public QueryInstanceWrapper(QueryTemplate queryTemplate, IQuerier querier)

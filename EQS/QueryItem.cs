@@ -71,10 +71,10 @@ namespace EQS
         }
     }
 
-    internal interface IData
+    public interface IData
     {
-        internal Location GetLocation();
-        internal Rotation GetRotation();
+        Location GetLocation();
+        Rotation GetRotation();
     }
 
     internal enum CachedScoreOp

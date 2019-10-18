@@ -5,17 +5,17 @@ using System.Linq;
 
 namespace EQS
 {
-    internal class QueryTemplate
+    public class QueryTemplate
     {
-        readonly private QueryGenerator _generator;
-        readonly private List<QueryTest> _tests;
-        readonly private IQueryCondition _condition;
+        private readonly QueryGenerator _generator;
+        private readonly List<QueryTest> _tests;
+        private readonly IQueryCondition _condition;
 
-        internal QueryTemplate(ref QueryGenerator generator, ref List<QueryTest> tests) : this(ref generator, ref tests, null)
+        public QueryTemplate(in QueryGenerator generator, in List<QueryTest> tests) : this(in generator, in tests, null)
         {   
         }
 
-        internal QueryTemplate(ref QueryGenerator generator, ref List<QueryTest> tests, IQueryCondition condition)
+        public QueryTemplate(in QueryGenerator generator, in List<QueryTest> tests, IQueryCondition condition)
         {
             _generator = generator;
             _tests = tests;

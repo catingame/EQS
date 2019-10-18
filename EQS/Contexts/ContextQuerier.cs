@@ -5,7 +5,7 @@ using System.Text;
 
 namespace EQS.Contexts
 {
-    class ContextQuerier : IQueryContext
+    public class ContextQuerier : IQueryContext
     {
         public List<IData> ProvideActorsSet(in IQuerier querier)
         {

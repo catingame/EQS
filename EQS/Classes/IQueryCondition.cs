@@ -2,8 +2,8 @@
 
 namespace EQS.Classes
 {
-    internal interface IQueryCondition
+    public interface IQueryCondition
     {
-        internal bool CheckCondtion(in IQuerier querier);
+        bool CheckCondtion(in IQuerier querier);
     }
 }

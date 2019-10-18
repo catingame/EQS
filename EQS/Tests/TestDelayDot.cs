@@ -6,21 +6,21 @@ using EQS;
 
 namespace EQS.Tests
 {
-    internal class TestDelayDot : QueryTest
+    public class TestDelayDot : QueryTest
     {
         readonly private IQueryContext _rotation;
         readonly private IQueryContext _lineFrom;
+        readonly private Single _rotationDensity;
 
         private List<Location> LineBFrom_Vector;
         private List<Rotation> DelayRotator;
         private List<Rotation> ContextRotation = new List<Rotation>();
 
-        private Single RotationDensity;
-
-        internal TestDelayDot(IQueryContext Rotation, IQueryContext LineFrom) 
+        public TestDelayDot(in IQueryContext Rotation, in IQueryContext LineFrom, Single RotationDensity) 
         {
             _rotation = Rotation;
             _lineFrom = LineFrom;
+            _rotationDensity = RotationDensity;
         }
         internal override void OnRunTest()
         {
@@ -33,7 +33,7 @@ namespace EQS.Tests
             {
                 for (Int32 i = 0, l = LineA_Rotator.Count; i < l; ++i)
                 {
-                    LineA_Rotator[i] = System.Numerics.Vector3.Lerp(DelayRotator[i].To, LineA_Rotator[i].To, RotationDensity).ToRotation();
+                    LineA_Rotator[i] = System.Numerics.Vector3.Lerp(DelayRotator[i].To, LineA_Rotator[i].To, _rotationDensity).ToRotation();
                 }
             }
             else 

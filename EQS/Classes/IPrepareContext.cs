@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace EQS.Classes
 {
-    internal interface IPrepareContext
+    interface IPrepareContext
     {
         List<IData> PrepareContext_RawData(in IQueryContext context, in IQuerier querier)
         {

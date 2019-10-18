@@ -1,6 +1,6 @@
 ﻿namespace EQS
 {
-    internal interface IQuerier : IData
+    public interface IQuerier : IData
     {
     }
 }

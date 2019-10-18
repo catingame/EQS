@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace EQS.Classes
 {
-    internal abstract class QueryGenerator : IPrepareContext
+    public abstract class QueryGenerator : IPrepareContext
     {
         private int _uid = 0;
         private List<QueryItem> _items { get; set; }

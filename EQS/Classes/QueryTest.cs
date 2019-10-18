@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace EQS.Classes
 {
-    internal abstract class QueryTest : IPrepareContext
+    public abstract class QueryTest : IPrepareContext
     {
         private IQuerier _querier;
         private Func<List<QueryItem>> _getItemDetails;

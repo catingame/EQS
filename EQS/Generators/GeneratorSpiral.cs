@@ -6,13 +6,13 @@ using System.Text;
 
 namespace EQS.Generators
 {
-    internal class GneratorSpiral : QueryGenerator
+    public class GeneratorSpiral : QueryGenerator
     {
         private Int32 MinR = 0;
         private Int32 MaxR = 600;
         private Int32 Distance = 10;
 
-        internal GneratorSpiral(IQueryContext context) : base(context)
+        public GeneratorSpiral(IQueryContext context) : base(context)
         {
         }
 

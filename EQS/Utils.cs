@@ -4,7 +4,7 @@ using System.Text;
 
 namespace EQS
 {
-    internal class Location
+    public class Location
     {
         internal Single X = 0;
         internal Single Y = 0;
@@ -13,7 +13,7 @@ namespace EQS
         internal System.Numerics.Vector3 To => new System.Numerics.Vector3(X, Y, Z);
     }
 
-    internal class Rotation
+    public class Rotation
     {
         internal Single Yaw = 0;
         internal Single Pitch = 0;

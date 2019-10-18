@@ -5,9 +5,9 @@ using System.Text;
 
 namespace EQS.Generators
 {
-    internal class GeneratorActor : QueryGenerator
+    public class GeneratorActor : QueryGenerator
     {
-        internal GeneratorActor(IQueryContext context) : base(context)
+        public GeneratorActor(IQueryContext context) : base(context)
         {
         }
 
