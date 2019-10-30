@@ -37,8 +37,9 @@ namespace NUnitTestEQS
 
             var generator = new GeneratorSpiral(new ContextQuerier());
 
-            TestDelayDot testDelayDot = new TestDelayDot(new ContextQuerier(), new ContextQuerier(), 0);
-            var tests = new List<QueryTest>() { testDelayDot };
+            TestDelayDistance testDelayDistance = new TestDelayDistance(new ContextQuerier());
+
+            var tests = new List<QueryTest>() { testDelayDistance };
 
             
             var template = new QueryTemplate(generator, tests);
@@ -47,8 +48,7 @@ namespace NUnitTestEQS
 
             wrapper.Run();
 
-            
-            var results = wrapper.GetResults<DummyActor>();
+            var results = wrapper.GetResults<QueryItem>();
 
             
             Assert.Pass();

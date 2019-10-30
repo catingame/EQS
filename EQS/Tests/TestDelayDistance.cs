@@ -5,13 +5,20 @@ using System.Text;
 
 namespace EQS.Tests
 {
-    internal class TestDelayDistance : QueryTest
+    public class TestDelayDistance : QueryTest
     {
+        private readonly IQueryContext _distanceTo;
+
         private List<Location> contextLocations;
+
+        public TestDelayDistance(IQueryContext DistanceTo)
+        {
+            _distanceTo = DistanceTo;
+        }
 
         internal override void OnRunTest()
         {
-            contextLocations = (this as IPrepareContext).PrepareContext_Location(ClampContext, Querier);
+            contextLocations = (this as IPrepareContext).PrepareContext_Location(_distanceTo, Querier);
             LoopOverItems();
         }
 

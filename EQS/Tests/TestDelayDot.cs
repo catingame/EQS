@@ -8,20 +8,21 @@ namespace EQS.Tests
 {
     public class TestDelayDot : QueryTest
     {
-        readonly private IQueryContext _rotation;
-        readonly private IQueryContext _lineFrom;
-        readonly private Single _rotationDensity;
+        private readonly IQueryContext _rotation;
+        private readonly IQueryContext _lineFrom;
+        private readonly Single _rotationDensity;
 
         private List<Location> LineBFrom_Vector;
         private List<Rotation> DelayRotator;
         private List<Rotation> ContextRotation = new List<Rotation>();
 
-        public TestDelayDot(in IQueryContext Rotation, in IQueryContext LineFrom, Single RotationDensity) 
+        public TestDelayDot(in IQueryContext Rotation, in IQueryContext LineFrom, Single RotationDensity)
         {
             _rotation = Rotation;
             _lineFrom = LineFrom;
             _rotationDensity = RotationDensity;
         }
+
         internal override void OnRunTest()
         {
             var LineA_Rotator = (this as IPrepareContext).PrepareContext_Rotation(_rotation, Querier);
