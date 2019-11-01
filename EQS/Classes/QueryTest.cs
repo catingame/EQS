@@ -7,31 +7,36 @@ namespace EQS.Classes
     public abstract class QueryTest : IPrepareContext
     {
         private IQuerier _querier;
-        private Func<List<QueryItem>> _getItemDetails;
-        
+        private QueryInstace _queryInstace;
+
+
         private TestScoringEquation ScoringEquation => TestScoringEquation.Linear;
+        
         private TestFilterType FilterType => TestFilterType.Range;
-        private int FilterMin => 0;
-        private int FilterMax => 0;
+        private Int32 FilterMin => 0;
+        private Int32 FilterMax => 0;
+
         private CachedScoreOp MultipleContextScoreOp => CachedScoreOp.AverageScore;
-        private int ClampMin => 0;
-        private int ClampMax => 0;
-        private int ScoringFactorValue => 1;
+        private Int32 ClampMin => 0;
+        private Int32 ClampMax => 0;
+
+        private Single ScoringFactorValue => 1;
 
         internal QueryItem CurrentIterator { get; set; }
         internal IQueryContext ClampContext { get; }
         internal TestPurpose Purpose { get; }
-        internal IQuerier Querier { get; }
+        internal IQuerier Querier => _querier;
 
         internal void RunTest(in QueryInstace queryInstace)
         {
-            _querier = queryInstace.querier;
-            _getItemDetails = queryInstace.GetItemDetails;
+            _queryInstace = queryInstace;
+            _querier = queryInstace.Querier;
+            OnRunTest();
         }
 
         internal void LoopOverItems()
         {
-            var items = _getItemDetails();
+            var items = _queryInstace.GetItemDetails();
 
             var IsUsingClamp = ClampMin != ClampMax;
 
@@ -44,7 +49,7 @@ namespace EQS.Classes
 
                     foreach (var qurierLocation in qurierLocations)
                     {
-                        var distance = System.Numerics.Vector3.Distance(CurrentIterator.Location, qurierLocation.To);
+                        var distance = System.Numerics.Vector3.Distance(CurrentIterator.Location, qurierLocation);
                         if (ClampMin <= distance && distance <= ClampMax)
                         {
                             OnQuery();
@@ -71,18 +76,14 @@ namespace EQS.Classes
 
         internal void NormalizeItemScores(in QueryInstace queryInstace)
         {
-            var items = _getItemDetails();
-            var minScore = int.MaxValue;
-            var maxScore = int.MinValue;
+            var items = _queryInstace.GetItemDetails();
+            var minScore = Single.MaxValue;
+            var maxScore = Single.MinValue;
 
             foreach (var item in items)
             {
                 minScore = Math.Min(item.Score, minScore);
                 maxScore = Math.Max(item.Score, maxScore);
-                if (item.IsDiscarded)
-                {
-                    queryInstace.UpdateItem(item, _item => _item.IsDiscarded = item.IsDiscarded);
-                }
             }
 
             if (minScore == maxScore) return;
@@ -93,7 +94,7 @@ namespace EQS.Classes
             foreach (var item in items)
             {
                 var testValue = item.Score;
-                var weightedScore = 0;
+                Single weightedScore = 0;
 
                 if (!item.IsDiscarded)
                 {
@@ -117,43 +118,11 @@ namespace EQS.Classes
 
                 item.Score = weightedScore;
             }
-
-            // * normalize
-            minScore = int.MaxValue;
-            maxScore = int.MinValue;
-
-            foreach (var item in items)
-            {
-                minScore = Math.Min(item.Score, minScore);
-                maxScore = Math.Max(item.Score, maxScore);
-            }
-
-            if (minScore == maxScore) return;
-
-            var sum = 0;
-            var scoreRange = maxScore - minScore;
-
-            foreach (var item in items)
-            {
-                if (!item.IsDiscarded)
-                {
-                    var normalizedScore = (item.Score - minScore) / scoreRange;
-                    sum += item.Score = normalizedScore != 0 ? normalizedScore : int.MinValue;
-                }
-            }
-
-            sum = 1 / sum;
-
-            foreach (var item in items)
-            {
-                var weight = item.Score * sum;
-                queryInstace.UpdateItem(item, _item => _item.Score *= weight);
-            }
         }
 
-        abstract internal void OnRunTest();
+        internal abstract void OnRunTest();
 
-        abstract internal void OnQuery();
+        internal abstract void OnQuery();
     }
 
     internal enum TestPurpose

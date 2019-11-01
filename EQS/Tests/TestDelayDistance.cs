@@ -1,6 +1,7 @@
 ﻿using EQS.Classes;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 
 namespace EQS.Tests
@@ -9,7 +10,7 @@ namespace EQS.Tests
     {
         private readonly IQueryContext _distanceTo;
 
-        private List<Location> contextLocations;
+        private List<Vector3> contextLocations;
 
         public TestDelayDistance(IQueryContext DistanceTo)
         {
@@ -26,7 +27,7 @@ namespace EQS.Tests
         {
             foreach (var location in contextLocations)
             {
-                var l = location.To;
+                var l = location;
                 var a = CurrentIterator.Location;
 
                 var x = a.X - l.X;

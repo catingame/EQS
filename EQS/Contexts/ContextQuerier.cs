@@ -7,9 +7,9 @@ namespace EQS.Contexts
 {
     public class ContextQuerier : IQueryContext
     {
-        public List<IData> ProvideActorsSet(in IQuerier querier)
+        public List<IQuerier> ProvideActorsSet(in IQuerier querier)
         {
-            return new List<IData>() { querier };
+            return new List<IQuerier>() { querier };
         }
     }
 }

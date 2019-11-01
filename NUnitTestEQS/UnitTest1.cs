@@ -1,7 +1,7 @@
 using NUnit.Framework;
 
 using System.Collections.Generic;
-
+using System.Numerics;
 using EQS;
 using EQS.Generators;
 using EQS.Tests;
@@ -12,14 +12,14 @@ namespace NUnitTestEQS
 {
     public class DummyActor : IQuerier
     {
-        public Location GetLocation()
+        public Vector3 GetLocation()
         {
-            return new Location();
+            return new Vector3();
         }
 
-        public Rotation GetRotation()
+        public Vector3 GetRotation()
         {
-            return new Rotation();
+            return new Vector3();
         }
     }
 
@@ -36,21 +36,19 @@ namespace NUnitTestEQS
             var qurier = new DummyActor();
 
             var generator = new GeneratorSpiral(new ContextQuerier());
+            var tests = new List<QueryTest>()
+            {
+                new TestDelayDistance(new ContextQuerier())
+            };
 
-            TestDelayDistance testDelayDistance = new TestDelayDistance(new ContextQuerier());
-
-            var tests = new List<QueryTest>() { testDelayDistance };
-
-            
             var template = new QueryTemplate(generator, tests);
 
             var wrapper = Manager.RunEQSQuery(template, qurier);
 
             wrapper.Run();
 
-            var results = wrapper.GetResults<QueryItem>();
+            var results = wrapper.QueryResult.GetAllItems<Vector3>();
 
-            
             Assert.Pass();
         }
     }

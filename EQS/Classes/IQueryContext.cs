@@ -5,6 +5,6 @@ namespace EQS.Classes
 {
     public interface IQueryContext
     {
-        List<IData> ProvideActorsSet(in IQuerier querier);
+        List<IQuerier> ProvideActorsSet(in IQuerier querier);
     }
 }

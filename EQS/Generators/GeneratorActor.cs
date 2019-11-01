@@ -13,10 +13,10 @@ namespace EQS.Generators
 
         internal override void DoItemGeneration()
         {
-            var actors = (this as IPrepareContext).PrepareContext_RawData(Context, querier);
+            var actors = (this as IPrepareContext).PrepareContext_Querier(Context, querier);
             foreach (var actor in actors)
             {
-                AddGeneratedItem(new QueryItem(actor));
+                AddGeneratedItem(new QueryItem(actor, actor.GetType()));
             }
         }
     }

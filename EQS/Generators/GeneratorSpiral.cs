@@ -18,7 +18,7 @@ namespace EQS.Generators
 
         internal override void DoItemGeneration()
         {
-            var rawDatas = (this as IPrepareContext).PrepareContext_RawData(Context, querier);
+            var rawDatas = (this as IPrepareContext).PrepareContext_Location(Context, querier);
 
             var phi = (1 + Math.Sqrt(5)) / 2;
             var da = 2 * Math.PI * (phi - 1) / phi;
@@ -28,18 +28,20 @@ namespace EQS.Generators
 
             foreach (var rawData in rawDatas)
             {
-                var l = rawData.GetLocation();
-                var v = new Location() { Z = l.Z };
-
+                var l = rawData;
                 for (var i = 0; i < n; ++i)
                 {
-                    v.X = l.X + r * (Single)Math.Cos(a);
-                    v.Y = l.Y + r * (Single)Math.Sin(a);
+                    var v = new Vector3()
+                        { 
+                            X = l.X + r * (Single)Math.Cos(a),
+                            Y = l.Y + r * (Single)Math.Sin(a),
+                            Z = l.Z
+                        };
 
                     a = fn((Single)(a + da), (Single)(2 * Math.PI));
                     r += Distance;
 
-                    AddGeneratedItem(new QueryItem(v));
+                    AddGeneratedItem(new QueryItem(v, v.GetType()));
                 }
             }
         }

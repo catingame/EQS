@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 namespace EQS
 {
     public class QueryInstanceWrapper
@@ -6,6 +7,11 @@ namespace EQS
         private readonly QueryTemplate queryTemplate;
         private readonly IQuerier querier;
         private QueryResult queryResult;
+
+        public QueryResult QueryResult
+        {
+            get { return queryResult; }
+        }
 
         public QueryInstanceWrapper(QueryTemplate queryTemplate, IQuerier querier)
         {
@@ -17,11 +23,6 @@ namespace EQS
         {
             QueryInstace envQueryInstance = new QueryInstace(queryTemplate, querier);
             queryResult = envQueryInstance.Execute();
-        }
-
-        public List<T> GetResults<T>() where T : class
-        {
-            return queryResult.GetAllItem<T>();
         }
     }
 }

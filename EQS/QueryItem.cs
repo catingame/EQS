@@ -8,17 +8,20 @@ namespace EQS
     {
         internal Int32 Idx;
         internal CachedScoreOp Operation = CachedScoreOp.None;
-        internal Int32  Score = 0;
+        internal Single  Score = 0;
         internal Boolean IsDiscarded = false;
 
         internal object RawData { get; } = null;
+        internal Type RawDataType { get; } = null;
 
-        internal QueryItem(object rawData)
+        // * down-casting
+        internal QueryItem(in object data, in Type dataType)
         {
-            RawData = rawData;
+            RawData = data;
+            RawDataType = dataType;
         }
 
-        internal System.Numerics.Vector3 Location =>  (RawData is Location vec) ? vec.To : new System.Numerics.Vector3();
+        internal Vector3 Location =>  (RawData is Vector3 vec) ? vec : new Vector3();
 
         internal void SetScore(TestPurpose testPurpose, TestFilterType filterType, Single score, Int32 filterMin, Int32 filterMax)
         {
@@ -27,13 +30,13 @@ namespace EQS
                 switch (filterType)
                 {
                     case TestFilterType.Maximum:
-                        IsDiscarded = !(Score <= filterMax);
+                        IsDiscarded = !(score <= filterMax);
                         break;
                     case TestFilterType.Minimum:
-                        IsDiscarded = !(Score >= filterMin);
+                        IsDiscarded = !(score >= filterMin);
                         break;
                     case TestFilterType.Range:
-                        IsDiscarded = !((filterMin <= Score) && (Score <= filterMax));
+                        IsDiscarded = !((filterMin <= score) && (score <= filterMax));
                         break;
                 }
             }
@@ -49,7 +52,7 @@ namespace EQS
             switch (Operation)
             {
                 case CachedScoreOp.AverageScore:
-                    Score += Score;
+                    Score += score;
                     break;
                 case CachedScoreOp.MinScore:
                     Score = Math.Min(score, Score);
@@ -62,19 +65,14 @@ namespace EQS
 
         public object Clone()
         {
-            return new QueryItem(RawData)
+            return new QueryItem(RawData, RawDataType)
             {
-                IsDiscarded = IsDiscarded,
+                Idx = Idx,
                 Operation = Operation,
-                Score = Score
+                Score = Score,
+                IsDiscarded = IsDiscarded
             };
         }
-    }
-
-    public interface IData
-    {
-        Location GetLocation();
-        Rotation GetRotation();
     }
 
     internal enum CachedScoreOp

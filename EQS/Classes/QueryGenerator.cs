@@ -19,7 +19,7 @@ namespace EQS.Classes
 
         internal void GenerateItems(in QueryInstace queryInstace, out List<QueryItem> items)
         {
-            querier = queryInstace.querier;
+            querier = queryInstace.Querier;
 
             _items = items = new List<QueryItem>();
 

@@ -1,6 +1,7 @@
 ﻿using EQS.Classes;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 using EQS;
 
@@ -12,9 +13,9 @@ namespace EQS.Tests
         private readonly IQueryContext _lineFrom;
         private readonly Single _rotationDensity;
 
-        private List<Location> LineBFrom_Vector;
-        private List<Rotation> DelayRotator;
-        private List<Rotation> ContextRotation = new List<Rotation>();
+        private List<Vector3> LineBFrom_Vector;
+        private List<Vector3> DelayRotator;
+        private List<Vector3> ContextRotation = new List<Vector3>();
 
         public TestDelayDot(in IQueryContext Rotation, in IQueryContext LineFrom, Single RotationDensity)
         {
@@ -34,7 +35,7 @@ namespace EQS.Tests
             {
                 for (Int32 i = 0, l = LineA_Rotator.Count; i < l; ++i)
                 {
-                    LineA_Rotator[i] = System.Numerics.Vector3.Lerp(DelayRotator[i].To, LineA_Rotator[i].To, _rotationDensity).ToRotation();
+                    LineA_Rotator[i] = System.Numerics.Vector3.Lerp(DelayRotator[i], LineA_Rotator[i], _rotationDensity);
                 }
             }
             else 
@@ -44,7 +45,7 @@ namespace EQS.Tests
 
             foreach (var rotator in DelayRotator)
             {
-                ContextRotation.Add(new Rotation() { Yaw = rotator.Yaw });
+                ContextRotation.Add(new Vector3() { Z = rotator.Z });
             }
 
             LoopOverItems();
@@ -66,7 +67,7 @@ namespace EQS.Tests
 
                 foreach (var rotator in ContextRotation)
                 {
-                    var a = rotator.To;
+                    var a = rotator;
                     var w = a.X * x + a.Y * y;
 
                     SetScoreSingle(w);

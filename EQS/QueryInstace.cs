@@ -11,20 +11,11 @@ namespace EQS
         private IQuerier _querier;
         private List<QueryItem> _items;
 
-        internal IQuerier querier { get { return _querier; } }
-        
-        internal List<QueryItem> GetItemDetails() 
-        { 
-            return _items.ConvertAll(item => item.Clone() as QueryItem); 
-        }
+        internal IQuerier Querier => _querier;
 
-        internal void UpdateItem(QueryItem item, Action<QueryItem> update)
+        internal List<QueryItem> GetItemDetails()
         {
-            var _item = _items.Find(_item => _item.Idx == item.Idx);
-            if (_item != null)
-            {
-                update.Invoke(_item);
-            }
+            return _items;
         }
 
         internal QueryInstace(QueryTemplate queryTemplate, IQuerier querier)
@@ -37,11 +28,7 @@ namespace EQS
         {
             _queryTemplate.GenerateItems(this, out _items);
 
-            NormalizeScores(ref _items);
-
             _queryTemplate.RunTest(this, (test) => test.Purpose == TestPurpose.Filter ? 0 : 1);
-
-            NormalizeScores(ref _items);
 
             return FinalizeQuery(ref _items, ref _querier);
         }
@@ -50,13 +37,15 @@ namespace EQS
         {
             items.OrderBy(item => item.IsDiscarded ? 1 : -item.Score);
 
+            NormalizeScores(ref _items);
+
             return new QueryResult(items, querier);
         }
 
         private void NormalizeScores(ref List<QueryItem> items)
         {
-            var minScore = Int32.MaxValue;
-            var maxScore = Int32.MinValue;
+            var minScore = Single.MaxValue;
+            var maxScore = Single.MinValue;
 
             foreach(var item in items)
             {
@@ -66,8 +55,7 @@ namespace EQS
 
             if (minScore == maxScore)
             {
-                var score = 1 / items.Count;
-
+                var score = minScore == 0 ? 0 : 1;
                 foreach (var item in items)
                 {
                     item.Score = score;
@@ -75,19 +63,10 @@ namespace EQS
             }
             else
             {
-                var sum = 0;
                 var scoreRange = maxScore - minScore;
-
                 foreach (var item in items)
                 {
-                    sum += item.Score = (item.Score - minScore) / scoreRange;
-                }
-
-                sum = 1 / sum;
-
-                foreach (var item in items)
-                {
-                    item.Score *= sum;
+                    item.Score = item.Score = (item.Score - minScore) / scoreRange;
                 }
             }
         }

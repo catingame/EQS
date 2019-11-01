@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 
 namespace EQS
 {
-    internal class QueryResult
+    public class QueryResult
     {
         private List<QueryItem> items;
         private IQuerier querier;
@@ -14,16 +15,17 @@ namespace EQS
             this.querier = querier;
         }
 
-        internal List<T> GetAllItem<T>() where T : class
+        public T GetItem<T>(Int32 idx)
         {
-            var actors = new List<T>();
+            Contract.Assert(items[idx].RawDataType == typeof(T));
+            return (T)items[idx].RawData;
+        }
 
-            foreach (var item in items)
-            {
-                actors.Add(item.RawData as T);
-            }
-
-            return actors;
+        public IEnumerable<T> GetAllItems<T>()
+        {
+            Contract.Assert(items.Count > 0);
+            Contract.Assert(items[0].RawDataType == typeof(T));
+            return items.ConvertAll(item => (T)item.RawData).ToArray();
         }
     }
 }
