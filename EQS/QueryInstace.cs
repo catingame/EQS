@@ -35,7 +35,7 @@ namespace EQS
 
         private QueryResult FinalizeQuery(ref List<QueryItem> items, ref IQuerier querier)
         {
-            items.OrderBy(item => item.IsDiscarded ? 1 : -item.Score);
+            items.Sort();
 
             NormalizeScores(ref _items);
 

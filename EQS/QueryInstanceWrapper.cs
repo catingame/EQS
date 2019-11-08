@@ -8,10 +8,7 @@ namespace EQS
         private readonly IQuerier querier;
         private QueryResult queryResult;
 
-        public QueryResult QueryResult
-        {
-            get { return queryResult; }
-        }
+        public QueryResult QueryResult => queryResult;
 
         public QueryInstanceWrapper(QueryTemplate queryTemplate, IQuerier querier)
         {

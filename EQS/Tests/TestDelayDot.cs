@@ -70,7 +70,7 @@ namespace EQS.Tests
                     var a = rotator;
                     var w = a.X * x + a.Y * y;
 
-                    SetScoreSingle(w);
+                    SetScore(w);
                 }
             }
         }

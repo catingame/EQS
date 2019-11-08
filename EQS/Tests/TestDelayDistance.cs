@@ -6,11 +6,19 @@ using System.Text;
 
 namespace EQS.Tests
 {
+    public enum TestDistance
+    {
+        Distance3D,
+        Distance2D,
+        DistanceZ,
+        DistanceAbsoluteZ
+    }
+
     public class TestDelayDistance : QueryTest
     {
         private readonly IQueryContext _distanceTo;
-
         private List<Vector3> contextLocations;
+        public TestDistance testMode = TestDistance.Distance2D;
 
         public TestDelayDistance(IQueryContext DistanceTo)
         {
@@ -30,13 +38,38 @@ namespace EQS.Tests
                 var l = location;
                 var a = CurrentIterator.Location;
 
-                var x = a.X - l.X;
-                var y = a.Y - l.Y;
+                var w = testMode switch
+                {
+                    TestDistance.Distance2D => CalcDistance2D(l, a),
+                    TestDistance.Distance3D => CalcDistance3D(l, a),
+                    TestDistance.DistanceZ => CalcDistanceZ(l, a),
+                    TestDistance.DistanceAbsoluteZ => CalcDistanceAbsoluteZ(l, a),
+                    _ => 0f
+                };
 
-                var w = (Single)Math.Sqrt(x * x + y * y);
-                
-                SetScoreSingle(w);
+                SetScore(w);
             }
+        }
+
+        private Single CalcDistance3D(Vector3 posA, Vector3 posB)
+        {
+            return (posB - posA).Length();
+        }
+
+        private Single CalcDistance2D(Vector3 posA, Vector3 posB)
+        {
+            posB.Z = posA.Z = 0;
+            return (posB - posA).Length();
+        }
+
+        private Single CalcDistanceZ(Vector3 posA, Vector3 posB)
+        {
+            return posB.Z - posA.Z;
+        }
+
+        private Single CalcDistanceAbsoluteZ(Vector3 posA, Vector3 posB)
+        {
+            return Math.Abs(posB.Z - posA.Z);
         }
     }
 }

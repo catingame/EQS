@@ -4,12 +4,11 @@ using System.Numerics;
 
 namespace EQS
 {
-    internal class QueryItem : ICloneable
+    internal class QueryItem : ICloneable, IComparable<QueryItem>
     {
         internal Int32 Idx;
-        internal CachedScoreOp Operation = CachedScoreOp.None;
-        internal Single  Score = 0;
-        internal Boolean IsDiscarded = false;
+        internal TestScoreOperator Operation = TestScoreOperator.AverageScore;
+        internal Single  Score = 0f;
 
         internal object RawData { get; } = null;
         internal Type RawDataType { get; } = null;
@@ -21,43 +20,42 @@ namespace EQS
             RawDataType = dataType;
         }
 
+        // TODO:
         internal Vector3 Location =>  (RawData is Vector3 vec) ? vec : new Vector3();
 
-        internal void SetScore(TestPurpose testPurpose, TestFilterType filterType, Single score, Int32 filterMin, Int32 filterMax)
+        internal void SetScore(TestPurpose testPurpose, TestFilterType filterType, Single score, Single filterMin, Single filterMax)
         {
+            var passedTest = true;
+
             if (testPurpose != TestPurpose.Score)
             {
-                switch (filterType)
+                passedTest = filterType switch
                 {
-                    case TestFilterType.Maximum:
-                        IsDiscarded = !(score <= filterMax);
-                        break;
-                    case TestFilterType.Minimum:
-                        IsDiscarded = !(score >= filterMin);
-                        break;
-                    case TestFilterType.Range:
-                        IsDiscarded = !((filterMin <= score) && (score <= filterMax));
-                        break;
-                }
+                    TestFilterType.Maximum => (score <= filterMax),
+                    TestFilterType.Minimum => (score >= filterMin),
+                    TestFilterType.Range => (filterMin <= score) && (score <= filterMax),
+                    TestFilterType.Match => false,
+                    _ => false,
+                };
             }
-            else if (!IsDiscarded)
+            
+            if(passedTest)
             {
-                // TODO: Cast Single To Int32
-                SetScoreInternal((Int32)score);
+                SetScoreInternal(score);
             }
         }
 
-        internal void SetScoreInternal(Int32 score)
+        internal void SetScoreInternal(Single score)
         {
             switch (Operation)
             {
-                case CachedScoreOp.AverageScore:
+                case TestScoreOperator.AverageScore:
                     Score += score;
                     break;
-                case CachedScoreOp.MinScore:
+                case TestScoreOperator.MinScore:
                     Score = Math.Min(score, Score);
                     break;
-                case CachedScoreOp.MaxScore:
+                case TestScoreOperator.MaxScore:
                     Score = Math.Max(score, Score);
                     break;
             }
@@ -69,17 +67,13 @@ namespace EQS
             {
                 Idx = Idx,
                 Operation = Operation,
-                Score = Score,
-                IsDiscarded = IsDiscarded
+                Score = Score
             };
         }
-    }
 
-    internal enum CachedScoreOp
-    {
-        None,
-        AverageScore,
-        MinScore,
-        MaxScore
+        public int CompareTo(QueryItem obj)
+        {
+            return obj == null ? 1 : Score.CompareTo(obj.Score);
+        }
     }
 }

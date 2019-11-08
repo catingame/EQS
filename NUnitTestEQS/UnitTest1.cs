@@ -23,7 +23,7 @@ namespace NUnitTestEQS
         }
     }
 
-    public class Tests
+    public class QueryResult
     {
         [SetUp]
         public void Setup()
@@ -31,7 +31,7 @@ namespace NUnitTestEQS
         }
 
         [Test]
-        public void Test1()
+        public void GetBestScoreResult()
         {
             var qurier = new DummyActor();
 
@@ -47,9 +47,9 @@ namespace NUnitTestEQS
 
             wrapper.Run();
 
-            var results = wrapper.QueryResult.GetAllItems<Vector3>();
+            var result = wrapper.QueryResult.GetBestScoreResult<Vector3>();
 
-            Assert.Pass();
+            Assert.AreEqual(wrapper.QueryResult.GetItem<Vector3>(wrapper.QueryResult.Length), result);
         }
     }
 }
