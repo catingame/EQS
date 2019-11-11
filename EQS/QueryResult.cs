@@ -5,39 +5,39 @@ using System.Linq;
 
 namespace EQS
 {
-    public class QueryResult
+    public partial class QueryResult
     {
-        private List<QueryItem> items;
-        private IQuerier querier;
+        private readonly List<QueryItem> _items;
+        private IQuerier _querier;
 
-        public Int32 Length => items.Count - 1;
+        public Int32 Length => _items.Count - 1;
 
         internal QueryResult(in List<QueryItem> items, in IQuerier querier)
         {
-            this.items = items;
-            this.querier = querier;
+            this._items = items;
+            this._querier = querier;
         }
 
         public T GetItem<T>(Int32 idx)
         {
-            Contract.Assert(items.Count > idx);
-            Contract.Assert(items[idx].RawDataType == typeof(T));
-            return (T)items[idx].RawData;
+            Contract.Assert(_items.Count > idx);
+            Contract.Assert(_items[idx].RawDataType == typeof(T));
+            return (T)_items[idx].RawData;
         }
 
         public IEnumerable<T> GetAllItems<T>()
         {
-            Contract.Assert(items.Count > 0);
-            Contract.Assert(items[0].RawDataType == typeof(T));
-            return items.ConvertAll(item => (T)item.RawData).ToArray();
+            Contract.Assert(_items.Count > 0);
+            Contract.Assert(_items[0].RawDataType == typeof(T));
+            return _items.ConvertAll(item => (T)item.RawData).ToArray();
         }
 
         public T GetBestScoreResult<T>()
         {
-            Contract.Assert(items.Count > 0);
-            Contract.Assert(items[0].RawDataType == typeof(T));
+            Contract.Assert(_items.Count > 0);
+            Contract.Assert(_items[0].RawDataType == typeof(T));
 
-            var sortedList = items;
+            var sortedList = _items;
             sortedList.Sort();
             return (T)sortedList.Last().RawData;
         }

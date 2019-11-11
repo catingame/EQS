@@ -6,10 +6,9 @@ namespace EQS.Classes
 {
     public abstract class QueryTest : IPrepareContext
     {
-        private IQuerier _querier;
-        private QueryInstace _queryInstace;
+        private QueryInstace _queryInstance;
 
-        internal IQuerier Querier => _querier;
+        internal IQuerier Querier { get; private set; }
         internal QueryItem CurrentIterator { get; set; }
 
         public TestScoringEquation ScoringEquation = TestScoringEquation.Linear;
@@ -29,16 +28,16 @@ namespace EQS.Classes
 
         public Single ScoringFactorValue = 1;
 
-        internal void RunTest(in QueryInstace queryInstace)
+        internal void RunTest(in QueryInstace queryInstance)
         {
-            _queryInstace = queryInstace;
-            _querier = queryInstace.Querier;
+            _queryInstance = queryInstance;
+            Querier = queryInstance.Querier;
             OnRunTest();
         }
 
         internal void LoopOverItems()
         {
-            var items = _queryInstace.GetItemDetails();
+            var items = _queryInstance.GetItemDetails();
             foreach (var item in items)
             {
                 CurrentIterator = item;
@@ -53,9 +52,9 @@ namespace EQS.Classes
             CurrentIterator.SetScore(Purpose, FilterType, score, ScoreFilterMin, ScoreFilterMax);
         }
 
-        internal void NormalizeItemScores(in QueryInstace queryInstace)
+        internal void NormalizeItemScores(in QueryInstace queryInstance)
         {
-            var items = _queryInstace.GetItemDetails();
+            var items = _queryInstance.GetItemDetails();
             var minScore = (NormalizationType == TestNormalizationType.Absolute) ? 0 : Single.MaxValue;
             var maxScore = Single.MinValue;
 

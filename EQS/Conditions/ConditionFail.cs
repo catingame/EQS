@@ -7,7 +7,7 @@ namespace EQS.Conditions
 {
     internal class ConditionFail : IQueryCondition
     {
-        Boolean IQueryCondition.CheckCondtion(in IQuerier querier)
+        Boolean IQueryCondition.CheckCondition(in IQuerier querier)
         {
             return false;
         }

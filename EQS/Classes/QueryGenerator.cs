@@ -6,10 +6,9 @@ namespace EQS.Classes
     public abstract class QueryGenerator : IPrepareContext
     {
         private int _uid = 0;
-        private List<QueryItem> _items { get; set; }
+        private List<QueryItem> _items;
 
-        internal IQuerier querier;
-
+        internal IQuerier Querier;
         internal IQueryContext Context { get; }
 
         protected QueryGenerator(IQueryContext context) 
@@ -17,9 +16,9 @@ namespace EQS.Classes
             Context = context;
         }
 
-        internal void GenerateItems(in QueryInstace queryInstace, out List<QueryItem> items)
+        internal void GenerateItems(in QueryInstace queryInstance, out List<QueryItem> items)
         {
-            querier = queryInstace.Querier;
+            Querier = queryInstance.Querier;
 
             _items = items = new List<QueryItem>();
 

@@ -1,3 +1,4 @@
+using System;
 using NUnit.Framework;
 
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using EQS.Generators;
 using EQS.Tests;
 using EQS.Contexts;
 using EQS.Classes;
+using EQS.Debug;
 
 namespace NUnitTestEQS
 {
@@ -25,31 +27,48 @@ namespace NUnitTestEQS
 
     public class QueryResult
     {
+        private DummyActor _querier;
+
         [SetUp]
         public void Setup()
         {
+            _querier = new DummyActor();
         }
 
         [Test]
         public void GetBestScoreResult()
         {
-            var qurier = new DummyActor();
-
-            var generator = new GeneratorSpiral(new ContextQuerier());
+            var generator = new Generator_Spiral(new ContextQuerier());
             var tests = new List<QueryTest>()
             {
-                new TestDelayDistance(new ContextQuerier())
+                new Test_Distance(new ContextQuerier())
             };
-
             var template = new QueryTemplate(generator, tests);
-
-            var wrapper = Manager.RunEQSQuery(template, qurier);
+            var wrapper = Manager.RunEQSQuery(template, _querier);
 
             wrapper.Run();
 
             var result = wrapper.QueryResult.GetBestScoreResult<Vector3>();
 
             Assert.AreEqual(wrapper.QueryResult.GetItem<Vector3>(wrapper.QueryResult.Length), result);
+        }
+
+        [Test]
+        public void DrawDebugItem()
+        {
+            var generator = new Generator_Spiral(new ContextQuerier());
+            var template = new QueryTemplate(generator, new List<QueryTest>());
+            var wrapper = Manager.RunEQSQuery(template, _querier);
+
+            wrapper.Run();
+
+            DebugDrawFactory.Get().RegisterFactory(DebugShape.Sphere, item =>
+            {
+                // * Write draw API in here.
+                Console.Write($"{item.Point} => {item.Score}");
+            });
+
+            wrapper.QueryResult.DrawDebugItem(DebugShape.Sphere);
         }
     }
 }

@@ -5,9 +5,9 @@ using System.Linq;
 
 namespace EQS
 {
-    internal class QueryInstace
+    internal class QueryInstance
     {
-        private QueryTemplate _queryTemplate;
+        private readonly QueryTemplate _queryTemplate;
         private IQuerier _querier;
         private List<QueryItem> _items;
 
@@ -18,7 +18,7 @@ namespace EQS
             return _items;
         }
 
-        internal QueryInstace(QueryTemplate queryTemplate, IQuerier querier)
+        internal QueryInstance(QueryTemplate queryTemplate, IQuerier querier)
         {
             this._queryTemplate = queryTemplate;
             this._querier = querier;

@@ -22,19 +22,19 @@ namespace EQS
             _condition = condition;
         }
 
-        internal void GenerateItems(in QueryInstace queryInstace, out List<QueryItem> items)
+        internal void GenerateItems(in QueryInstance queryInstance, out List<QueryItem> items)
         {
-            _generator.GenerateItems(in queryInstace, out items);
+            _generator.GenerateItems(in queryInstance, out items);
         }
 
-        internal void RunTest(in QueryInstace queryInstace, Func<QueryTest, Int32> p)
+        internal void RunTest(in QueryInstance queryInstance, Func<QueryTest, Int32> p)
         {
             _tests.OrderBy(p);
 
             foreach (var test in _tests)
             {
-                test.RunTest(in queryInstace);
-                test.NormalizeItemScores(in queryInstace);
+                test.RunTest(in queryInstance);
+                test.NormalizeItemScores(in queryInstance);
             }
         }
     }
