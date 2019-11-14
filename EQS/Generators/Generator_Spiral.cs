@@ -16,7 +16,7 @@ namespace EQS.Generators
         {
         }
 
-        internal override void DoItemGeneration()
+        internal override List<QueryItem> DoItemGeneration()
         {
             var contextLocations = (this as IPrepareContext).PrepareContext_Location(Context, Querier);
 
@@ -26,6 +26,7 @@ namespace EQS.Generators
             var a = 0.0;
             var r = MinR;
 
+            var items = new List<QueryItem>();
             foreach (var contextLocation in contextLocations)
             {
                 var l = contextLocation;
@@ -41,9 +42,10 @@ namespace EQS.Generators
                     a = Rot((Single)(a + da), (Single)(2 * Math.PI));
                     r += Distance;
 
-                    AddGeneratedItem(new QueryItem(v, v.GetType()));
+                    items.Add(new QueryItem(v, v.GetType()));
                 }
             }
+            return items;
 
             static Single Rot(Single a, Single b) => a - ((Single)Math.Floor(a / b) * b);
         }

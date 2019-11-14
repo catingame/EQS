@@ -6,7 +6,7 @@ namespace EQS.Classes
 {
     public abstract class QueryTest : IPrepareContext
     {
-        private QueryInstace _queryInstance;
+        private QueryInstance _queryInstance;
 
         internal IQuerier Querier { get; private set; }
         internal QueryItem CurrentIterator { get; set; }
@@ -28,7 +28,7 @@ namespace EQS.Classes
 
         public Single ScoringFactorValue = 1;
 
-        internal void RunTest(in QueryInstace queryInstance)
+        internal void RunTest(in QueryInstance queryInstance)
         {
             _queryInstance = queryInstance;
             Querier = queryInstance.Querier;
@@ -52,7 +52,7 @@ namespace EQS.Classes
             CurrentIterator.SetScore(Purpose, FilterType, score, ScoreFilterMin, ScoreFilterMax);
         }
 
-        internal void NormalizeItemScores(in QueryInstace queryInstance)
+        internal void NormalizeItemScores(in QueryInstance queryInstance)
         {
             var items = _queryInstance.GetItemDetails();
             var minScore = (NormalizationType == TestNormalizationType.Absolute) ? 0 : Single.MaxValue;

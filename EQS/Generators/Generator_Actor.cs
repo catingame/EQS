@@ -11,13 +11,16 @@ namespace EQS.Generators
         {
         }
 
-        internal override void DoItemGeneration()
+        internal override List<QueryItem> DoItemGeneration()
         {
-            var actors = (this as IPrepareContext).PrepareContext_Querier(Context, querier);
+            var actors = (this as IPrepareContext).PrepareContext_Querier(Context, Querier);
+            
+            var items = new List<QueryItem>();
             foreach (var actor in actors)
             {
-                AddGeneratedItem(new QueryItem(actor, actor.GetType()));
+                items.Add(new QueryItem(actor, actor.GetType()));
             }
+            return items;
         }
     }
 }

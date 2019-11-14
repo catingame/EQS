@@ -16,36 +16,37 @@ namespace EQS.Generators
         {
         }
 
-        internal override void DoItemGeneration()
+        internal override List<QueryItem> DoItemGeneration()
         {
-            var contextLocations = (this as IPrepareContext).PrepareContext_Location(Context, querier);
+            var contextLocations = (this as IPrepareContext).PrepareContext_Location(Context, Querier);
 
-            Single i_p = 1 / PointsPerRing;
+            var ceta = 1 / PointsPerRing;
 
+            var items = new List<QueryItem>();
             foreach (var location in contextLocations)
             {
                 for (var i = 0; i < PointsPerRing; ++i)
                 {
-                    var dx = (i_p * i) * 2 - 1;
-                    var rad = (Math.Exp(dx) / Math.E) * GridSize;
+                    var dx = (ceta * i) * 2 - 1;
+                    var rad = (Single)(Math.Exp(dx) / Math.E) * GridSize;
 
                     var dy = (i + 1) / PointsPerRing;
                     var length = NumberOfRings * dy;
                     for (var j = 0; j < length; ++j)
                     {
-                        var rot = 360 * (j / length);
-                        var vector = new Vector3(0, 0, rot);
+                        Single rot = 360 * (j / length);
+                        var v = new Vector3()
+                        {
+                            X = location.X + rad * (Single)Math.Cos(rot),
+                            Y = location.Y + rad * (Single)Math.Sin(rot),
+                            Z = location.Z
+                        };
 
-                        // TODO:
-                        //const rot = 360 * (index / index_length)
-                        //    $R.Yaw = rot;
-                        //const dest_vector = ($V_unit_X.RotateVector($R, $V)).Multiply_VectorFloat(rad, $V)
-                        //const dest_location = l.Add_VectorVector(dest_vector, $V)
-
-                        //this.AddGeneratedVector(dest_location)
+                        items.Add(new QueryItem(v, v.GetType()));
                     }
                 }
             }
+            return items;
         }
     }
 }

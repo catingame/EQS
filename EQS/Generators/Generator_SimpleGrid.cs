@@ -15,7 +15,7 @@ namespace EQS.Generators
         {
         }
 
-        internal override void DoItemGeneration()
+        internal override List<QueryItem> DoItemGeneration()
         {
             var radiusValue = GridSize;
             var densityValue = SpaceBetween;
@@ -23,8 +23,9 @@ namespace EQS.Generators
             Int32 itemCount = (Int32) ((radiusValue * 2.0f / densityValue) + 1);
             Int32 itemCountHalf = itemCount / 2;
 
-            var contextLocations = (this as IPrepareContext).PrepareContext_Location(Context, querier);
+            var contextLocations = (this as IPrepareContext).PrepareContext_Location(Context, Querier);
 
+            var items = new List<QueryItem>();
             foreach (var contextLocation in contextLocations)
             {
                 for (var indexX = 0; indexX < itemCount; ++indexX)
@@ -37,10 +38,11 @@ namespace EQS.Generators
                                     0f
                                 );
 
-                        AddGeneratedItem(new QueryItem(v, v.GetType()));
+                        items.Add(new QueryItem(v, v.GetType()));
                     }
                 }
             }
+            return items;
         }
     }
 }

@@ -38,11 +38,16 @@ namespace NUnitTestEQS
         [Test]
         public void GetBestScoreResult()
         {
-            var generator = new Generator_Spiral(new ContextQuerier());
+            var generator = new List<QueryGenerator>()
+            {
+                new Generator_Spiral(new ContextQuerier())
+            };
+
             var tests = new List<QueryTest>()
             {
                 new Test_Distance(new ContextQuerier())
             };
+
             var template = new QueryTemplate(generator, tests);
             var wrapper = Manager.RunEQSQuery(template, _querier);
 
@@ -56,7 +61,11 @@ namespace NUnitTestEQS
         [Test]
         public void DrawDebugItem()
         {
-            var generator = new Generator_Spiral(new ContextQuerier());
+            var generator = new List<QueryGenerator>()
+            {
+                new Generator_Spiral(new ContextQuerier())
+            };
+
             var template = new QueryTemplate(generator, new List<QueryTest>());
             var wrapper = Manager.RunEQSQuery(template, _querier);
 

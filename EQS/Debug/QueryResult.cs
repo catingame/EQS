@@ -12,5 +12,10 @@ namespace EQS
                 factory.DrawDebugItem(shape, DebugItem.Converter(item));
             }   
         }
+
+        // * execution time
+        // * score by test
+        public void History()
+        { }
     }
 }

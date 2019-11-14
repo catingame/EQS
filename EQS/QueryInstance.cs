@@ -8,9 +8,11 @@ namespace EQS
     internal class QueryInstance
     {
         private readonly QueryTemplate _queryTemplate;
+        private readonly List<QueryItem> _items = new List<QueryItem>();
+        private readonly List<QueryItemDetails> _itemDetails = new List<QueryItemDetails>();
+        
         private IQuerier _querier;
-        private List<QueryItem> _items;
-
+        
         internal IQuerier Querier => _querier;
 
         internal List<QueryItem> GetItemDetails()
@@ -26,23 +28,47 @@ namespace EQS
 
         internal QueryResult Execute()
         {
-            _queryTemplate.GenerateItems(this, out _items);
+            _queryTemplate.GenerateItems(this);
 
             _queryTemplate.RunTest(this, (test) => test.Purpose == TestPurpose.Filter ? 0 : 1);
 
-            return FinalizeQuery(ref _items, ref _querier);
+            return FinalizeQuery(in _items, ref _querier);
         }
 
-        private QueryResult FinalizeQuery(ref List<QueryItem> items, ref IQuerier querier)
+        internal void AddItemData(Func<List<QueryItem>> getItemData)
+        {
+            var numOfTest = _queryTemplate.NumOfTest;
+            var idx = _items.Count;
+            
+            foreach (var item in getItemData())
+            {
+                // TODO: validate item
+                //var isValidate = true;
+                //if (isValidate)
+                {
+                    item.Idx = idx++;
+
+                    _items.Add(item);
+                    _itemDetails.Add(new QueryItemDetails()
+                    {
+                        Idx = item.Idx,
+                        _testResults = new List<Single>(numOfTest),
+                        _testWeightedScores = new List<Single>(numOfTest)
+                    });
+                }
+            }
+        }
+
+        private QueryResult FinalizeQuery(in List<QueryItem> items, ref IQuerier querier)
         {
             items.Sort();
 
-            NormalizeScores(ref _items);
+            NormalizeScores(in _items);
 
             return new QueryResult(items, querier);
         }
 
-        private void NormalizeScores(ref List<QueryItem> items)
+        private void NormalizeScores(in List<QueryItem> items)
         {
             var minScore = Single.MaxValue;
             var maxScore = Single.MinValue;
